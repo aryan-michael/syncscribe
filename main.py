@@ -35,22 +35,31 @@ response = co.generate(
 summary = response.generations[0].text.strip()
 print("Summary:", summary)
 
-# Vertex AI testing
-# Generate insights with Vertex AI (PaLM text-bison)
 credentials = service_account.Credentials.from_service_account_file(
-    "/Users/mihirdharaiya/syncscribe/meta-wording-454505-i7-ab234d3a818c.json"
+    "/Users/siraryanmichael/syncscribe/syncscribe-454510-6b6e3db310f5.json"
 )
-aiplatform.init(project="meta-wording-454505-i7", location="us-central1", credentials=credentials)
-text_bison = aiplatform.gapic.PredictionServiceClient(
-    client_options={"api_endpoint": "us-central1-aiplatform.googleapis.com"},
+project_id = "syncscribe-454510"
+location = "us-central1"
+
+aiplatform.init(
+    project=project_id,
+    location=location,
     credentials=credentials
 )
 
-endpoint = "projects/meta-wording-454505-i7/locations/us-central1/publishers/google/models/text-bison"
-request = {
-    "instances": [{"prompt": f"Provide insights on this meeting summary: {summary}"}],
-    "parameters": {"maxOutputTokens": 100, "temperature": 0.7}
-}
-response = text_bison.predict(endpoint=endpoint, instances=request["instances"], parameters=request["parameters"])
-insight = response.predictions[0]["content"]
+from vertexai.generative_models import GenerativeModel
+
+# Initialize Vertex AI
+aiplatform.init(
+    project="syncscribe-454510",
+    location="us-central1",
+    credentials=credentials
+)
+
+# Use Gemini model instead of text-bison
+model = GenerativeModel("gemini-pro")
+response = model.generate_content(
+    f"Provide insights on this meeting summary: {summary}"
+)
+insight = response.text
 print("Insight:", insight)
