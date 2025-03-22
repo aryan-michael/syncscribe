@@ -1,3 +1,15 @@
-*.json
+# Ignore secrets & environment files
 .env
-/venv
+*.json
+*.secret.json  # If you store API keys in a JSON file, ignore those instead of all JSON files
+
+# Ignore Python virtual environment
+venv/          # Correct way to ignore venv
+
+# Ignore OS-specific files
+.DS_Store      # macOS system file
+Thumbs.db      # Windows system file
+
+# Ignore Python cache and logs
+__pycache__/  
+*.log          # Ignore log files
