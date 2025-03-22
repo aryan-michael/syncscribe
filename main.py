@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import speech_recognition as sr
 import cohere
+from google.cloud import aiplatform
+from google.oauth2 import service_account
 
 load_dotenv()
 
@@ -34,28 +36,21 @@ summary = response.generations[0].text.strip()
 print("Summary:", summary)
 
 # Vertex AI testing
-
-from google.cloud import aiplatform
-from google.oauth2 import service_account
-
-# Authenticate
-credentials = service_account.Credentials.from_service_account_file("mihir_gcp_key.json")
+# Generate insights with Vertex AI (PaLM text-bison)
+credentials = service_account.Credentials.from_service_account_file(
+    "/Users/mihirdharaiya/syncscribe/meta-wording-454505-i7-ab234d3a818c.json"
+)
 aiplatform.init(project="meta-wording-454505-i7", location="us-central1", credentials=credentials)
+text_bison = aiplatform.gapic.PredictionServiceClient(
+    client_options={"api_endpoint": "us-central1-aiplatform.googleapis.com"},
+    credentials=credentials
+)
 
-# Load the pre-hosted text-bison model
-model = aiplatform.gapic.ModelServiceClient(client_options={"api_endpoint": "us-central1-aiplatform.googleapis.com"})
-text_bison = aiplatform.gapic.PredictionServiceClient(client_options={"api_endpoint": "us-central1-aiplatform.googleapis.com"})
-
-# summary called from Cohere process
-
-# Prepare the request for text-bison
 endpoint = "projects/meta-wording-454505-i7/locations/us-central1/publishers/google/models/text-bison"
 request = {
     "instances": [{"prompt": f"Provide insights on this meeting summary: {summary}"}],
     "parameters": {"maxOutputTokens": 100, "temperature": 0.7}
 }
-
-# Call text-bison
 response = text_bison.predict(endpoint=endpoint, instances=request["instances"], parameters=request["parameters"])
-insight = response.predictions[0]["content"]  # Extract the insight
+insight = response.predictions[0]["content"]
 print("Insight:", insight)
