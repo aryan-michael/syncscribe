@@ -20,7 +20,7 @@ recognizer = sr.Recognizer()
 # Accessing system mic for audio
 with sr.Microphone() as source:
     print("Listening...")
-    audio = recognizer.listen(source, timeout=20)
+    audio = recognizer.listen(source, timeout=30)
     text = recognizer.recognize_google(audio)
     print("Transcription:", text)
 
@@ -63,3 +63,7 @@ response = model.generate_content(
 )
 insight = response.text
 print("Insight:", insight)
+
+# Save to file
+# with open("meeting_report.txt", "w") as f:
+#     f.write(f"Transcription:\n{text}\n\nSummary:\n{summary}\n\nInsight:\n{insight}")

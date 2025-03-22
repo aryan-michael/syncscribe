@@ -13,3 +13,6 @@ Thumbs.db      # Windows system file
 # Ignore Python cache and logs
 __pycache__/  
 *.log          # Ignore log files
+
+# Ignore generated transcipts and summaries
+meeting_outputs/

@@ -1,4 +1,4 @@
-# Syncscribe
+# Syncscribe AI
 
 ## setup virtual environment for python3
 `python3 -m venv venv`
