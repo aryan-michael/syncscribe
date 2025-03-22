@@ -10,3 +10,5 @@ with sr.Microphone() as source:
     print("Listening...")
     audio = recognizer.listen(source, timeout=10)
     text = recognizer.recognize_google(audio)
+    print("\n")
+    print("Transcription:", text)
