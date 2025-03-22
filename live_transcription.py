@@ -2,6 +2,7 @@ import pyaudio
 from google.cloud import speech
 import queue
 import sys
+from google.cloud import speech_v1p1beta1 as speech
 
 # Audio recording settings
 CHUNK = 1024
@@ -17,11 +18,13 @@ audio_queue = queue.Queue()
 # Initialize Google Speech client
 client = speech.SpeechClient()
 
-# Configuration for streaming
+# Configuration for streaming with speaker diarization
 config = speech.RecognitionConfig(
     encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
     sample_rate_hertz=RATE,
     language_code="en-US",
+    enable_speaker_diarization=True,  # Enable diarization
+    diarization_speaker_count=2,     # Expect 2 speakers
 )
 streaming_config = speech.StreamingRecognitionConfig(config=config, interim_results=True)
 
@@ -32,7 +35,7 @@ def audio_generator():
         audio_queue.put(data)
         yield data
 
-# Handle streaming responses
+# Handle streaming responses with speaker tags
 def process_responses(responses):
     for response in responses:
         if not response.results:
@@ -40,12 +43,17 @@ def process_responses(responses):
         result = response.results[0]
         if not result.alternatives:
             continue
-        transcript = result.alternatives[0].transcript
+        alternative = result.alternatives[0]
+        transcript = alternative.transcript
+        speaker_tag = alternative.words[0].speaker_tag if alternative.words else None  # Get speaker tag from first word
+        
         if result.is_final:
-            print("Final Transcript:", transcript)
+            speaker_label = f"Speaker {speaker_tag}" if speaker_tag is not None else "Unknown"
+            print(f"Final Transcript ({speaker_label}): {transcript}")
             # Add Cohere summarization here later
         else:
-            sys.stdout.write(f"Live Transcript: {transcript}\r")
+            speaker_label = f"Speaker {speaker_tag}" if speaker_tag is not None else "Unknown"
+            sys.stdout.write(f"Live Transcript ({speaker_label}): {transcript}\r")
             sys.stdout.flush()
 
 # Main function to run the streaming
