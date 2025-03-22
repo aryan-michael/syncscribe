@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import speech_recognition as sr
 import cohere
+from google.cloud import aiplatform
+from google.oauth2 import service_account
 
 load_dotenv()
 
@@ -33,29 +35,31 @@ response = co.generate(
 summary = response.generations[0].text.strip()
 print("Summary:", summary)
 
-# Vertex AI testing
+credentials = service_account.Credentials.from_service_account_file(
+    "/Users/siraryanmichael/syncscribe/syncscribe-454510-6b6e3db310f5.json"
+)
+project_id = "syncscribe-454510"
+location = "us-central1"
 
-from google.cloud import aiplatform
-from google.oauth2 import service_account
+aiplatform.init(
+    project=project_id,
+    location=location,
+    credentials=credentials
+)
 
-# Authenticate
-credentials = service_account.Credentials.from_service_account_file("mihir_gcp_key.json")
-aiplatform.init(project="meta-wording-454505-i7", location="us-central1", credentials=credentials)
+from vertexai.generative_models import GenerativeModel
 
-# Load the pre-hosted text-bison model
-model = aiplatform.gapic.ModelServiceClient(client_options={"api_endpoint": "us-central1-aiplatform.googleapis.com"})
-text_bison = aiplatform.gapic.PredictionServiceClient(client_options={"api_endpoint": "us-central1-aiplatform.googleapis.com"})
+# Initialize Vertex AI
+aiplatform.init(
+    project="syncscribe-454510",
+    location="us-central1",
+    credentials=credentials
+)
 
-# summary called from Cohere process
-
-# Prepare the request for text-bison
-endpoint = "projects/meta-wording-454505-i7/locations/us-central1/publishers/google/models/text-bison"
-request = {
-    "instances": [{"prompt": f"Provide insights on this meeting summary: {summary}"}],
-    "parameters": {"maxOutputTokens": 100, "temperature": 0.7}
-}
-
-# Call text-bison
-response = text_bison.predict(endpoint=endpoint, instances=request["instances"], parameters=request["parameters"])
-insight = response.predictions[0]["content"]  # Extract the insight
+# Use Gemini model instead of text-bison
+model = GenerativeModel("gemini-pro")
+response = model.generate_content(
+    f"Provide insights on this meeting summary: {summary}"
+)
+insight = response.text
 print("Insight:", insight)
