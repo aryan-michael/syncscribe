@@ -8,7 +8,7 @@ load_dotenv()
 recognizer = sr.Recognizer()
 
 # Pre-recorded audio (.wav) file
-with sr.AudioFile("harvard.wav") as source:
+with sr.AudioFile("conversation.wav") as source:
     audio = recognizer.record(source)
     text = recognizer.recognize_google(audio)  # Free Google API for testing
     print("Transcription:", text)
@@ -32,3 +32,30 @@ response = co.generate(
 )
 summary = response.generations[0].text.strip()
 print("Summary:", summary)
+
+# Vertex AI testing
+
+from google.cloud import aiplatform
+from google.oauth2 import service_account
+
+# Authenticate
+credentials = service_account.Credentials.from_service_account_file("mihir_gcp_key.json")
+aiplatform.init(project="meta-wording-454505-i7", location="us-central1", credentials=credentials)
+
+# Load the pre-hosted text-bison model
+model = aiplatform.gapic.ModelServiceClient(client_options={"api_endpoint": "us-central1-aiplatform.googleapis.com"})
+text_bison = aiplatform.gapic.PredictionServiceClient(client_options={"api_endpoint": "us-central1-aiplatform.googleapis.com"})
+
+# summary called from Cohere process
+
+# Prepare the request for text-bison
+endpoint = "projects/meta-wording-454505-i7/locations/us-central1/publishers/google/models/text-bison"
+request = {
+    "instances": [{"prompt": f"Provide insights on this meeting summary: {summary}"}],
+    "parameters": {"maxOutputTokens": 100, "temperature": 0.7}
+}
+
+# Call text-bison
+response = text_bison.predict(endpoint=endpoint, instances=request["instances"], parameters=request["parameters"])
+insight = response.predictions[0]["content"]  # Extract the insight
+print("Insight:", insight)
