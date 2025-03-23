@@ -1,0 +1,1 @@
+"""Pydantic schemas for Zoom Bot API."""

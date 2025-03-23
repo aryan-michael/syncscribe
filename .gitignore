@@ -1,6 +1,7 @@
 # Ignore secrets & environment files
 .env
-*.json
+syncscribe-454510-6b6e3db310f5.json # GCP: Aryan
+mihir_gcp_key.json # GCP: Mihir
 *.secret.json  # If you store API keys in a JSON file, ignore those instead of all JSON files
 
 # Ignore Python virtual environment

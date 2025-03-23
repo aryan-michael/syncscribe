@@ -1,0 +1,17 @@
+fastapi[all]
+uvicorn
+pydantic
+python-dotenv
+python-multipart
+httpx
+speechrecognition
+cohere
+google-cloud-aiplatform
+google-cloud-speech
+vertexai
+pydub
+numpy
+pyaudio
+wave
+reportlab
+requests
