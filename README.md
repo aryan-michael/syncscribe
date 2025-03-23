@@ -14,7 +14,11 @@
 
 <img src="https://res.cloudinary.com/daifqo4s0/image/upload/v1742719738/syncscribe/WhatsApp_Image_2025-03-23_at_04.42.35_3_kblpiu.jpg" alt="project-screenshot" width="800" height="400/">
 
-<img src="https://res.cloudinary.com/daifqo4s0/image/upload/v1742720631/syncscribe/screencapture-localhost-3000-2025-03-23-04_41_13_jcbafu.png" alt="project-screenshot" width="800" height="400/">
+<img src="https://res.cloudinary.com/daifqo4s0/image/upload/v1742719737/syncscribe/WhatsApp_Image_2025-03-23_at_04.42.35_1_pstpyc.jpg" alt="project-screenshot" width="800" height="400/">
+
+<img src="https://res.cloudinary.com/daifqo4s0/image/upload/v1742722183/syncscribe/WhatsApp_Image_2025-03-23_at_05.28.53_vp7usi.jpg" alt="project-screenshot" width="800" height="400/">
+
+<img src="https://res.cloudinary.com/daifqo4s0/image/upload/v1742722222/syncscribe/WhatsApp_Image_2025-03-23_at_05.29.20_em5ev4.jpg" alt="project-screenshot" width="800" height="400/">
 
   
   
@@ -24,6 +28,7 @@ Here're some of the project's best features:
 
 *   Upload .wav file to get smmaries and insights
 *   Create or Join Zoom meeting for real-time Transcription summaries and Insights
+*   Export to PDF with one click
 
   
   
