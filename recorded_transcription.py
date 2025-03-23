@@ -75,7 +75,7 @@ load_dotenv()
 speech_client = speech.SpeechClient()
 
 # Load audio file and get properties
-audio_file = "new_recording.wav"
+audio_file = "conversation.wav"
 with sf.SoundFile(audio_file) as f:
     sample_rate = f.samplerate
     channels = f.channels
@@ -94,7 +94,7 @@ config = speech.RecognitionConfig(
 )
 
 # Get transcription
-response = speech_client.recognize(config=config, audio=audio)
+response = speech_client.long_running_recognize(config=config, audio=audio)
 
 # Save full transcript
 full_transcript = ""
